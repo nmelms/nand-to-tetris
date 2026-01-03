@@ -10,8 +10,8 @@ fn main() {
     let file_name = &args[1];
 
 
-    let contents = parser::init_parser(file_name);
-    println!("{:?}", contents);
+    let contents = parser::Parser::init(file_name);
+    println!("{:?}", contents.instruction_type());
 
     // let contents = fs::read_to_string(file_name)
     //     .expect("there was an error reading from the file");
