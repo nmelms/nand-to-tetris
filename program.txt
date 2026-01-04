@@ -3,3 +3,4 @@ U32
 line3
 @16
 D=M
+DMA=M
