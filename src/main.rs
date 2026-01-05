@@ -1,5 +1,4 @@
 use std::env;
-use std::fs;
 mod parser;
 
 // parser
@@ -10,16 +9,24 @@ fn main() {
     let file_name = &args[1];
 
     let mut parser = parser::Parser::new(file_name);
-    println!("{:?}", parser.instruction_type());
-
+    
+    println!("{:?}", parser.lines);
+    println!("{}", parser.has_more_lines());
     while parser.has_more_lines() {
-        let curr = parser.current_index;
-        // println!("THis is the current lline: {}", parser.lines[curr]);
+        println!("{}", parser.has_more_lines());
+
+        let cur = parser.current_index;
         let dest = parser.dest();
+        let comp = parser.comp();
+        let jump = parser.jump();
+
         println!("
-        Curr: {}
-        Dest: {}
-        ", curr,dest);
+            Current Instruction: {}
+            Dest: {}
+            Comp: {}
+            Jump: {}
+        ", cur, dest, comp, jump);
+
         parser.advance();
     }
 }

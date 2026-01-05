@@ -2,7 +2,6 @@ use std::fs;
 
 #[derive(Debug)]
 pub struct Parser {
-    file_contents: String,
     pub lines: Vec<String>,
     pub current_index: usize,
 }
@@ -11,7 +10,7 @@ impl Parser {
     pub fn new(file_name: &str) -> Self {
         let file_contents: String = fs::read_to_string(file_name)
             .expect("there was an error reading from the file in parser");
-        let mut current_index = 0;
+        let current_index = 0;
         let mut lines = Vec::new();
 
         for line in file_contents.lines() {
@@ -19,14 +18,13 @@ impl Parser {
         }
 
         Self {
-            file_contents,
             current_index,
             lines,
         }
     }
 
     pub fn has_more_lines(&self) -> bool {
-        if self.current_index < self.file_contents.len() {
+        if self.current_index < self.lines.len() {
             true
         } else {
             false
@@ -68,7 +66,47 @@ impl Parser {
                 "This instruction does not have a dest"
             }
         }else{
-            "This is not an A instruction"
+            "This is not C instruction"
+        }
+    }
+
+    pub fn comp(&self) -> &str {
+        if &self.instruction_type() == "C_INSTRUCTION" {
+            let cur = &self.lines[self.current_index];
+            
+
+            let has_equal: bool = self.lines[self.current_index].contains("=");
+            let has_semi: bool = self.lines[self.current_index].contains(";");
+
+            // only comp
+            if has_equal {
+                let split_on_eq: Vec<&str> = cur.split("=").collect();
+                split_on_eq[1]
+            }else if has_semi {
+                let split_on_semi: Vec<&str> = cur.split(";").collect();
+                split_on_semi[0]
+            } else {
+                return cur;
+            }
+        }else{
+            "This is not C instruction"
+        }
+    }
+
+    pub fn jump(&self) -> &str {
+        if &self.instruction_type() == "C_INSTRUCTION" {
+            // contains a jump?
+            let cur = &self.lines[self.current_index];
+            let has_semi: bool = self.lines[self.current_index].contains(";");
+            let split_on_semi: Vec<&str> = cur.split(";").collect();
+
+            if has_semi {
+                split_on_semi[1]
+            } else {
+                "no jump"
+            }
+        }else{
+            "This is not C instruction"
         }
     }
 }

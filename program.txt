@@ -4,3 +4,4 @@ line3
 @16
 D=M
 DMA=M
+0;JMP
