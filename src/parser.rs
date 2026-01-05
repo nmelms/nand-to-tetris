@@ -44,7 +44,7 @@ impl Parser {
             String::from("C_INSTRUCTION")
         }
     }
-
+    #[allow(dead_code)]
     pub fn symbol(&self) -> Option<String> {
         if self.instruction_type() == "A_INSTRUCTION" || self.instruction_type() == "L_INSTRUCTION"
         {
@@ -65,7 +65,7 @@ impl Parser {
             } else {
                 "This instruction does not have a dest"
             }
-        }else{
+        } else {
             "This is not C instruction"
         }
     }
@@ -73,7 +73,6 @@ impl Parser {
     pub fn comp(&self) -> &str {
         if &self.instruction_type() == "C_INSTRUCTION" {
             let cur = &self.lines[self.current_index];
-            
 
             let has_equal: bool = self.lines[self.current_index].contains("=");
             let has_semi: bool = self.lines[self.current_index].contains(";");
@@ -82,13 +81,13 @@ impl Parser {
             if has_equal {
                 let split_on_eq: Vec<&str> = cur.split("=").collect();
                 split_on_eq[1]
-            }else if has_semi {
+            } else if has_semi {
                 let split_on_semi: Vec<&str> = cur.split(";").collect();
                 split_on_semi[0]
             } else {
                 return cur;
             }
-        }else{
+        } else {
             "This is not C instruction"
         }
     }
@@ -105,7 +104,7 @@ impl Parser {
             } else {
                 "no jump"
             }
-        }else{
+        } else {
             "This is not C instruction"
         }
     }

@@ -1,7 +1,6 @@
 @R1
-U32
-line3
+D=M
 @16
 D=M
-DMA=M
+A=M
 0;JMP
