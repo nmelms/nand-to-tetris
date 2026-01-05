@@ -28,6 +28,8 @@ fn main() {
         ",
             cur, dest, comp, jump
         );
+        let decode = code::comp("M+1");
+        println!("Decode is : {:03b}", decode);
 
         parser.advance();
     }
