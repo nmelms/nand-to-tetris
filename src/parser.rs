@@ -102,7 +102,7 @@ impl Parser {
             if has_semi {
                 split_on_semi[1]
             } else {
-                "no jump"
+                "null"
             }
         } else {
             "This is not C instruction"
