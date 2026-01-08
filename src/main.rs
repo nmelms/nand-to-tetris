@@ -22,9 +22,9 @@ fn main() -> Result<()> {
             let comp = parser.comp();
             let jump = parser.jump();
 
-            let dest = code::dest(dest);
-            let comp = code::comp(comp);
-            let jump = code::jump(jump);
+            let dest = code::dest(dest.as_str());
+            let comp = code::comp(comp.as_str());
+            let jump = code::jump(jump.as_str());
 
             current |= comp << 6;
             current |= dest << 3;

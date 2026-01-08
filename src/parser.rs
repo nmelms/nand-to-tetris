@@ -54,54 +54,60 @@ impl Parser {
         }
     }
 
-    pub fn dest(&self) -> &str {
-        //get current line
-        if &self.instruction_type() == "C_INSTRUCTION" {
-            let cur = &self.lines[self.current_index];
-            let has_dest: bool = self.lines[self.current_index].contains("=");
-            let split: Vec<&str> = cur.split("=").collect();
-            if has_dest {
-                split[0]
-            } else {
-                "This instruction does not have a dest"
-            }
-        } else {
-            "This is not C instruction"
-        }
-    }
-
-    pub fn comp(&self) -> &str {
-        if &self.instruction_type() == "C_INSTRUCTION" {
-            let cur = &self.lines[self.current_index];
-
-            let has_equal: bool = self.lines[self.current_index].contains("=");
-            let has_semi: bool = self.lines[self.current_index].contains(";");
-
-            // only comp
-            if has_equal {
-                let split_on_eq: Vec<&str> = cur.split("=").collect();
-                split_on_eq[1]
-            } else if has_semi {
-                let split_on_semi: Vec<&str> = cur.split(";").collect();
-                split_on_semi[0]
-            } else {
-                return cur;
-            }
-        } else {
-            "This is not C instruction"
-        }
-    }
-
-    pub fn jump(&self) -> &str {
+    pub fn jump(&self) -> String {
         if &self.instruction_type() == "C_INSTRUCTION" {
             // contains a jump?
             let cur = &self.lines[self.current_index];
             let has_semi: bool = self.lines[self.current_index].contains(";");
             let split_on_semi: Vec<&str> = cur.split(";").collect();
 
-            if has_semi { split_on_semi[1] } else { "null" }
+            if has_semi { split_on_semi[1].to_string() } else { String::from("null") }
         } else {
-            "This is not C instruction"
+            String::from("This is not C instruction")
         }
+    }
+
+    pub fn dest(&self) -> String {
+        //get current line
+        if &self.instruction_type() == "C_INSTRUCTION" {
+            let cur = &self.lines[self.current_index];
+            let has_dest: bool = self.lines[self.current_index].contains("=");
+            let split: Vec<&str> = cur.split("=").collect();
+            if has_dest {
+                split[0].to_string()
+            } else {
+                String::from("This instruction does not have a dest")
+            }
+        } else {
+            String::from("This is not C instruction")
+        }
+    }
+
+    pub fn comp(&mut self) -> String {
+        let is_c = self.instruction_type() == "C_INSTRUCTION";
+        let mut cur = self.lines[self.current_index].clone();
+
+        if is_c {
+            match cur.find(";") {
+                Some(i) => {
+                    cur.split_off(i);
+                }
+                None => {
+                    println!("no Jump");
+                }
+            }
+
+            match cur.find("=") {
+                Some(i) => {
+                    let right = cur.split_off(i + 1);
+                    cur = right;
+                }
+                None => {
+                    println!("no Jump");
+                }
+            }
+        }
+
+        cur
     }
 }

@@ -1,8 +1,1 @@
-D=M
-M=1
-M=0
-D=D-M
-M=D+M
-M=D
-0;JMP
-D;JGT
+D=D+1;JLE
