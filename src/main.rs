@@ -11,12 +11,10 @@ fn main() -> Result<()> {
     let mut parser = parser::Parser::new(file_name);
 
     let mut file = File::create("output.hack")?;
-    let mut decoded_instructions: Vec<String> = Vec::new();
+    let mut decoded_instructions: Vec<u8> = Vec::new();
 
     while parser.has_more_lines() {
-
-
-        if parser.instruction_type() == "C_INSTRUCTION"{
+        if parser.instruction_type() == "C_INSTRUCTION" {
             let mut current: u16 = 0b1110000000000000;
 
             let cur = parser.current_index;
@@ -24,38 +22,26 @@ fn main() -> Result<()> {
             let comp = parser.comp();
             let jump = parser.jump();
 
-            let dest = code::dest(dest);
-            let comp = code::comp(comp);
-            let jump = code::jump(jump);
-            
+            let dest = code::dest(dest.as_str());
+            let comp = code::comp(comp.as_str());
+            let jump = code::jump(jump.as_str());
+
             current |= comp << 6;
             current |= dest << 3;
             current |= jump;
 
-            println!("finished string: {:b}", current)
+            println!("{:b}", current);
+            // write as 16 chars of 0/1 + newline (text .hack format)
+            let line = format!("{:016b}\n", current);
+            decoded_instructions.extend_from_slice(line.as_bytes());
 
-
-
-
+            println!("{:016b}", current);
         };
-
-
-
-
-        // println!(
-        //     "
-        //     Current Instruction: {}
-        //     Dest: {}
-        //     Comp: {}
-        //     Jump: {}
-        // ",
-        //     cur, dest, comp, jump
-        // );
-
 
         parser.advance();
     }
 
-    // file.write_all(b"file");
+    file.write_all(&decoded_instructions);
+
     Ok(())
 }
