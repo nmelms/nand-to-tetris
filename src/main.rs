@@ -17,7 +17,7 @@ fn main() -> Result<()> {
         if parser.instruction_type() == "C_INSTRUCTION" {
             let mut current: u16 = 0b1110000000000000;
 
-            let cur = parser.current_index;
+            // let cur = parser.current_index;
             let dest = parser.dest();
             let comp = parser.comp();
             let jump = parser.jump();
@@ -36,6 +36,14 @@ fn main() -> Result<()> {
             decoded_instructions.extend_from_slice(line.as_bytes());
 
             println!("{:016b}", current);
+        }else if parser.instruction_type() == "A_INSTRUCTION"{
+            let num = &mut parser.lines[parser.current_index];
+            let split = num.split_off(1);
+
+            let split: u32 = split.parse()
+                    .expect("Invalid number in A-instruction");
+            let line = format!("{:016b}\n", split);
+            decoded_instructions.extend_from_slice(line.as_bytes());
         };
 
         parser.advance();
