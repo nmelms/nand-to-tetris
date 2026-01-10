@@ -17,6 +17,7 @@ impl Parser {
 
 
         for line in file_contents.lines() {
+            println!("this is the current like in new: {}", line);
             lines.push(line.to_string());
         }
 
@@ -58,9 +59,13 @@ impl Parser {
             value.to_string()
         } else if self.instruction_type() == "L_INSTRUCTION" {
             let value = self.lines[self.current_index]
+                .trim()
                 .strip_prefix('(')
                 .and_then(|s| s.strip_suffix(')'))
-                .expect("Expected L-instruction");
+                .expect(&format!(
+                    "Expected L-instruction, got: {:?}",
+                    self.lines[self.current_index]
+                ));
 
             value.to_string()
         } else {

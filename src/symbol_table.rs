@@ -17,6 +17,8 @@ impl SymbolTable {
         table.insert("THAT".to_string(), 4);
         table.insert("SCREEN".to_string(), 16384);
         table.insert("KBD".to_string(), 24576);
+        table.insert("i".to_string(), 16 );
+        table.insert("i".to_string(), 16 );
 
         Self { table }
     }
@@ -33,6 +35,9 @@ impl SymbolTable {
     }
 
     pub fn get_address(&self, value: &str) -> u32 {
-        *self.table.get(value).expect("symbol not found in table ")
+        *self.table
+          .get(value)
+          .expect(&format!("Symbol not found in table: {}", value))
+
     }
 }

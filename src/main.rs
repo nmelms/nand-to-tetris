@@ -17,6 +17,12 @@ fn main() -> Result<()> {
     // first pass adding symbols to symbol table
 
     while parser.has_more_lines(){
+        let line = parser.lines[parser.current_index].trim();
+
+        if parser.lines[parser.current_index].starts_with("//"){
+            parser.advance();
+            continue;
+        }
         if parser.instruction_type() == "L_INSTRUCTION" {
            let symbol = parser.symbol();
             symbol_table.add_entry(symbol.to_string(), parser.label_index as u32);
@@ -31,6 +37,11 @@ fn main() -> Result<()> {
 
     while parser.has_more_lines() {
         // c instruction
+        let line = parser.lines[parser.current_index].trim();
+        if line.starts_with("//"){
+            parser.advance();
+            continue;
+        }
         println!("current instruction type: {}", parser.instruction_type());
         if parser.instruction_type() == "C_INSTRUCTION" {
             let mut current: u16 = 0b1110000000000000;
