@@ -12,15 +12,17 @@ fn main() -> Result<()> {
     let mut parser = parser::Parser::new(file_name);
     let mut symbol_table = symbol_table::SymbolTable::new();
 
-    let mut file = File::create("output.hack")?;
-    let mut decoded_instructions: Vec<u8> = Vec::new();
+    let mut file = File::create("Prog1.hack")?;
+    let mut decoded_instructions: Vec<String> = Vec::new();
     // first pass adding symbols to symbol table
 
     while parser.has_more_lines(){
         if parser.instruction_type() == "L_INSTRUCTION" {
            let symbol = parser.symbol();
-            symbol_table.add_entry(symbol.to_string(), (parser.current_index + 1) as u32);
+            symbol_table.add_entry(symbol.to_string(), parser.label_index as u32);
 
+        }else{
+            parser.label_index += 1;
         }
         parser.advance();
     }
@@ -46,8 +48,9 @@ fn main() -> Result<()> {
             current |= jump;
 
             println!("{:b}", current);
-            let line = format!("{:016b}\n", current);
-            decoded_instructions.extend_from_slice(line.as_bytes());
+            decoded_instructions.push(format!("{:016b}", current));
+            // let line = format!("{:016b}\n", current);
+            // decoded_instructions.extend_from_slice(line.as_bytes());
 
             // A instruction
         } else if parser.instruction_type() == "A_INSTRUCTION" {
@@ -58,10 +61,9 @@ fn main() -> Result<()> {
                 Ok(num) => num,
                 Err(_) => symbol_table.get_address(&symbol)
             };
-            let line = format!("{:016b}\n", value);
-            decoded_instructions.extend_from_slice(line.as_bytes());
-
-            // l instruction
+            decoded_instructions.push(format!("{:016b}", value));
+            // let line = format!("{:016b}\n", value);
+            // decoded_instructions.extend_from_slice(line.as_bytes());
         } 
 
         parser.advance();
@@ -69,7 +71,8 @@ fn main() -> Result<()> {
 
 
 
-    file.write_all(&decoded_instructions);
+    file.write_all(decoded_instructions.join("\n").as_bytes())?;
+
 
     Ok(())
 }
