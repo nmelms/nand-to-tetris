@@ -1,6 +1,7 @@
 use std::{env, fs::File, io::Write};
 mod code;
 mod parser;
+mod symbol_table;
 use std::io::Result;
 
 //assmbler
@@ -36,12 +37,11 @@ fn main() -> Result<()> {
             decoded_instructions.extend_from_slice(line.as_bytes());
 
             println!("{:016b}", current);
-        }else if parser.instruction_type() == "A_INSTRUCTION"{
+        } else if parser.instruction_type() == "A_INSTRUCTION" {
             let num = &mut parser.lines[parser.current_index];
             let split = num.split_off(1);
 
-            let split: u32 = split.parse()
-                    .expect("Invalid number in A-instruction");
+            let split: u32 = split.parse().expect("Invalid number in A-instruction");
             let line = format!("{:016b}\n", split);
             decoded_instructions.extend_from_slice(line.as_bytes());
         };

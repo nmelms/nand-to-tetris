@@ -61,7 +61,11 @@ impl Parser {
             let has_semi: bool = self.lines[self.current_index].contains(";");
             let split_on_semi: Vec<&str> = cur.split(";").collect();
 
-            if has_semi { split_on_semi[1].to_string() } else { String::from("null") }
+            if has_semi {
+                split_on_semi[1].to_string()
+            } else {
+                String::from("null")
+            }
         } else {
             String::from("This is not C instruction")
         }
