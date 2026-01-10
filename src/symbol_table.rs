@@ -21,4 +21,9 @@ impl SymbolTable {
             None => false,
         }
     }
+
+    pub fn get_address(&self, value: &str) -> u16{
+      
+           *self.table.get(value).expect("symbol not found in table ")
+    }
 }
