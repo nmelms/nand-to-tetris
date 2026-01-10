@@ -10,14 +10,28 @@ fn main() -> Result<()> {
     let file_name = &args[1];
 
     let mut parser = parser::Parser::new(file_name);
+    let mut symbol_table = symbol_table::SymbolTable::new();
 
     let mut file = File::create("output.hack")?;
     let mut decoded_instructions: Vec<u8> = Vec::new();
+    // first pass adding symbols to symbol table
+
+    while parser.has_more_lines(){
+        if parser.instruction_type() == "L_INSTRUCTION" {
+           let symbol = parser.symbol();
+            symbol_table.add_entry(symbol.to_string(), (parser.current_index + 1) as u32);
+
+        }
+        parser.advance();
+    }
+    // set parser back to 0
+    parser.current_index = 0;
 
     while parser.has_more_lines() {
+        // c instruction
+        println!("current instruction type: {}", parser.instruction_type());
         if parser.instruction_type() == "C_INSTRUCTION" {
             let mut current: u16 = 0b1110000000000000;
-
             // let cur = parser.current_index;
             let dest = parser.dest();
             let comp = parser.comp();
@@ -32,22 +46,28 @@ fn main() -> Result<()> {
             current |= jump;
 
             println!("{:b}", current);
-            // write as 16 chars of 0/1 + newline (text .hack format)
             let line = format!("{:016b}\n", current);
             decoded_instructions.extend_from_slice(line.as_bytes());
 
-            println!("{:016b}", current);
+            // A instruction
         } else if parser.instruction_type() == "A_INSTRUCTION" {
-            let num = &mut parser.lines[parser.current_index];
-            let split = num.split_off(1);
+            // let num = &mut parser.lines[parser.current_index];
+            let symbol = parser.symbol();
 
-            let split: u32 = split.parse().expect("Invalid number in A-instruction");
-            let line = format!("{:016b}\n", split);
+            let value = match symbol.parse::<u32>() {
+                Ok(num) => num,
+                Err(_) => symbol_table.get_address(&symbol)
+            };
+            let line = format!("{:016b}\n", value);
             decoded_instructions.extend_from_slice(line.as_bytes());
-        };
+
+            // l instruction
+        } 
 
         parser.advance();
     }
+
+
 
     file.write_all(&decoded_instructions);
 

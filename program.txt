@@ -1,2 +1,6 @@
-@2
-@4
+@R0
+D=M
+(LOOP)
+(LOOP2)
+(LOOP3)
+@LOOP3

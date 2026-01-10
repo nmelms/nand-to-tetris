@@ -4,6 +4,7 @@ use std::fs;
 pub struct Parser {
     pub lines: Vec<String>,
     pub current_index: usize,
+    pub label_index: usize,
 }
 
 impl Parser {
@@ -11,7 +12,9 @@ impl Parser {
         let file_contents: String = fs::read_to_string(file_name)
             .expect("there was an error reading from the file in parser");
         let current_index = 0;
+        let label_index = 0;
         let mut lines = Vec::new();
+
 
         for line in file_contents.lines() {
             lines.push(line.to_string());
@@ -20,6 +23,7 @@ impl Parser {
         Self {
             current_index,
             lines,
+            label_index,
         }
     }
 
@@ -38,19 +42,29 @@ impl Parser {
     pub fn instruction_type(&self) -> String {
         if self.lines[self.current_index].starts_with("@") {
             String::from("A_INSTRUCTION")
-        } else if self.lines[self.current_index].starts_with("symbol") {
+        } else if self.lines[self.current_index].starts_with("(") {
             String::from("L_INSTRUCTION")
         } else {
             String::from("C_INSTRUCTION")
         }
     }
     #[allow(dead_code)]
-    pub fn symbol(&self) -> Option<String> {
-        if self.instruction_type() == "A_INSTRUCTION" || self.instruction_type() == "L_INSTRUCTION"
-        {
-            Some(self.lines[self.current_index].clone())
+    pub fn symbol(&self) -> String {
+        if self.instruction_type() == "A_INSTRUCTION" {
+            let value = self.lines[self.current_index]
+                .strip_prefix('@')
+                .expect("Expected A-instruction");
+
+            value.to_string()
+        } else if self.instruction_type() == "L_INSTRUCTION" {
+            let value = self.lines[self.current_index]
+                .strip_prefix('(')
+                .and_then(|s| s.strip_suffix(')'))
+                .expect("Expected L-instruction");
+
+            value.to_string()
         } else {
-            None
+            String::from("Not an a or c instruction")
         }
     }
 
