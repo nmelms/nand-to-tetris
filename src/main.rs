@@ -18,15 +18,15 @@ fn main() -> Result<()> {
 
     while parser.has_more_lines(){
         let line = parser.lines[parser.current_index].trim();
-        println!("inside first loop: {}", parser.instruction_type());
+        // println!("inside first loop: {}", parser.instruction_type());
 
-        if parser.lines[parser.current_index].starts_with("//") || line.is_empty(){
+        if line.starts_with("//") || line.is_empty(){
             parser.advance();
             continue;
         }
         if parser.instruction_type() == "L_INSTRUCTION" {
            let symbol = parser.symbol();
-           println!("prser label inded: {}", parser.label_index);
+           println!("prser label index: {}", parser.label_index);
             symbol_table.add_entry(symbol.to_string(), parser.label_index as u32);
 
         }else{
@@ -36,16 +36,17 @@ fn main() -> Result<()> {
     }
     // set parser back to 0
     parser.current_index = 0;
+    println!("{:?}", symbol_table.table);
 
     while parser.has_more_lines() {
-                println!("inside first loop: {}", parser.instruction_type());
+                // println!("inside first loop: {}", parser.instruction_type());
         // c instruction
         let line = parser.lines[parser.current_index].trim();
         if line.starts_with("//") || line.is_empty(){
             parser.advance();
             continue;
         }
-        println!("current instruction type: {}", parser.instruction_type());
+        // println!("current instruction type: {}", parser.instruction_type());
         if parser.instruction_type() == "C_INSTRUCTION" {
             let mut current: u16 = 0b1110000000000000;
             // let cur = parser.current_index;
