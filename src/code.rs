@@ -17,14 +17,15 @@ pub fn dest(code: &str) -> u16 {
         "null" => 0b000,
         "M" => 0b001,
         "D" => 0b010,
-        "DM" => 0b011,
+        "MD" | "DM" => 0b011,
         "A" => 0b100,
-        "AM" => 0b101,
-        "AD" => 0b110,
-        "ADM" => 0b111,
+        "AM" | "MA" => 0b101,
+        "AD" | "DA" => 0b110,
+        "AMD" | "ADM" | "MAD" | "MDA" | "DAM" | "DMA" => 0b111,
         _ => 0b000,
     }
 }
+
 pub fn comp(code: &str) -> u16 {
     println!("in comp: {}", code);
     match code {
