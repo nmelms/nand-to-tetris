@@ -18,7 +18,6 @@ fn main() -> Result<()> {
 
     while parser.has_more_lines(){
         let line = parser.lines[parser.current_index].trim();
-        // println!("inside first loop: {}", parser.instruction_type());
 
         if line.starts_with("//") || line.is_empty(){
             parser.advance();
@@ -36,20 +35,15 @@ fn main() -> Result<()> {
     }
     // set parser back to 0
     parser.current_index = 0;
-    println!("{:?}", symbol_table.table);
 
     while parser.has_more_lines() {
-                // println!("inside first loop: {}", parser.instruction_type());
-        // c instruction
         let line = parser.lines[parser.current_index].trim();
         if line.starts_with("//") || line.is_empty(){
             parser.advance();
             continue;
         }
-        // println!("current instruction type: {}", parser.instruction_type());
         if parser.instruction_type() == "C_INSTRUCTION" {
             let mut current: u16 = 0b1110000000000000;
-            // let cur = parser.current_index;
             let dest = parser.dest();
             let comp = parser.comp();
             let jump = parser.jump();
@@ -64,12 +58,9 @@ fn main() -> Result<()> {
 
             println!("{:b}", current);
             decoded_instructions.push(format!("{:016b}", current));
-            // let line = format!("{:016b}\n", current);
-            // decoded_instructions.extend_from_slice(line.as_bytes());
 
             // A instruction
         } else if parser.instruction_type() == "A_INSTRUCTION" {
-            // let num = &mut parser.lines[parser.current_index];
             let symbol = parser.symbol();
 
             let value = match symbol.parse::<u32>() {
@@ -77,8 +68,6 @@ fn main() -> Result<()> {
                 Err(_) => symbol_table.get_address(&symbol)
             };
             decoded_instructions.push(format!("{:016b}", value));
-            // let line = format!("{:016b}\n", value);
-            // decoded_instructions.extend_from_slice(line.as_bytes());
         } 
 
         parser.advance();

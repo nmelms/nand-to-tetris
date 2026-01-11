@@ -19,7 +19,6 @@ impl Parser {
 
 
         for line in file_contents.lines() {
-            // println!("this is the current like in new: {}", line);
             lines.push(line.to_string());
         }
 
