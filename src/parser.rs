@@ -5,6 +5,7 @@ pub struct Parser {
     pub lines: Vec<String>,
     pub current_index: usize,
     pub label_index: usize,
+    pub var_index: usize, 
 }
 
 impl Parser {
@@ -13,11 +14,12 @@ impl Parser {
             .expect("there was an error reading from the file in parser");
         let current_index = 0;
         let label_index = 0;
+        let var_index = 16;
         let mut lines = Vec::new();
 
 
         for line in file_contents.lines() {
-            println!("this is the current like in new: {}", line);
+            // println!("this is the current like in new: {}", line);
             lines.push(line.to_string());
         }
 
@@ -25,6 +27,7 @@ impl Parser {
             current_index,
             lines,
             label_index,
+            var_index,
         }
     }
 
@@ -41,9 +44,10 @@ impl Parser {
     }
 
     pub fn instruction_type(&self) -> String {
-        if self.lines[self.current_index].starts_with("@") {
+        let line = self.lines[self.current_index].trim();
+        if line.starts_with("@") {
             String::from("A_INSTRUCTION")
-        } else if self.lines[self.current_index].starts_with("(") {
+        } else if line.starts_with("(") {
             String::from("L_INSTRUCTION")
         } else {
             String::from("C_INSTRUCTION")
@@ -53,6 +57,7 @@ impl Parser {
     pub fn symbol(&self) -> String {
         if self.instruction_type() == "A_INSTRUCTION" {
             let value = self.lines[self.current_index]
+                .trim()
                 .strip_prefix('@')
                 .expect("Expected A-instruction");
 
@@ -93,8 +98,8 @@ impl Parser {
     pub fn dest(&self) -> String {
         //get current line
         if &self.instruction_type() == "C_INSTRUCTION" {
-            let cur = &self.lines[self.current_index];
-            let has_dest: bool = self.lines[self.current_index].contains("=");
+            let cur = &self.lines[self.current_index].trim();
+            let has_dest: bool = self.lines[self.current_index].trim().contains("=");
             let split: Vec<&str> = cur.split("=").collect();
             if has_dest {
                 split[0].to_string()
@@ -108,12 +113,12 @@ impl Parser {
 
     pub fn comp(&mut self) -> String {
         let is_c = self.instruction_type() == "C_INSTRUCTION";
-        let mut cur = self.lines[self.current_index].clone();
+        let mut cur = self.lines[self.current_index].trim().to_string();
 
         if is_c {
             match cur.find(";") {
                 Some(i) => {
-                    cur.split_off(i);
+                    let _jump = cur.split_off(i);
                 }
                 None => {
                     println!("no Jump");
@@ -126,7 +131,7 @@ impl Parser {
                     cur = right;
                 }
                 None => {
-                    println!("no Jump");
+                    println!("no dest");
                 }
             }
         }

@@ -18,13 +18,15 @@ fn main() -> Result<()> {
 
     while parser.has_more_lines(){
         let line = parser.lines[parser.current_index].trim();
+        println!("inside first loop: {}", parser.instruction_type());
 
-        if parser.lines[parser.current_index].starts_with("//"){
+        if parser.lines[parser.current_index].starts_with("//") || line.is_empty(){
             parser.advance();
             continue;
         }
         if parser.instruction_type() == "L_INSTRUCTION" {
            let symbol = parser.symbol();
+           println!("prser label inded: {}", parser.label_index);
             symbol_table.add_entry(symbol.to_string(), parser.label_index as u32);
 
         }else{
@@ -36,9 +38,10 @@ fn main() -> Result<()> {
     parser.current_index = 0;
 
     while parser.has_more_lines() {
+                println!("inside first loop: {}", parser.instruction_type());
         // c instruction
         let line = parser.lines[parser.current_index].trim();
-        if line.starts_with("//"){
+        if line.starts_with("//") || line.is_empty(){
             parser.advance();
             continue;
         }

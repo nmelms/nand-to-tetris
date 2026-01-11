@@ -2,11 +2,14 @@ use std::collections::HashMap;
 
 pub struct SymbolTable {
     pub table: HashMap<String, u32>,
+    pub var_index: usize,
 }
 
 impl SymbolTable {
     pub fn new() -> Self {
         let mut table = HashMap::new();
+        // start at 15 since we inc 1 first
+        let var_index = 15;
         for i in 0..=15 {
             table.insert(format!("R{}", i), i);
         }
@@ -18,9 +21,8 @@ impl SymbolTable {
         table.insert("SCREEN".to_string(), 16384);
         table.insert("KBD".to_string(), 24576);
         table.insert("i".to_string(), 16 );
-        table.insert("i".to_string(), 16 );
 
-        Self { table }
+        Self { table, var_index }
     }
 
     pub fn add_entry(&mut self, symbol: String, address: u32) -> () {
@@ -34,10 +36,16 @@ impl SymbolTable {
         }
     }
 
-    pub fn get_address(&self, value: &str) -> u32 {
-        *self.table
-          .get(value)
-          .expect(&format!("Symbol not found in table: {}", value))
+    pub fn get_address(&mut self, value: &str) -> u32 {
+        let addr = match self.table.get(value){
+            Some(addr) => *addr,
+            None => {
+                self.var_index += 1;
+                self.var_index as u32
+                
+            }
+        };
+          addr
 
     }
 }
