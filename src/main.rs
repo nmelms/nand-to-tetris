@@ -42,6 +42,7 @@ fn main() -> Result<()> {
             parser.advance();
             continue;
         }
+        // C instruction
         if parser.instruction_type() == "C_INSTRUCTION" {
             let mut current: u16 = 0b1110000000000000;
             let dest = parser.dest();

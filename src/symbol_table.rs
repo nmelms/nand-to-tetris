@@ -20,6 +20,7 @@ impl SymbolTable {
         table.insert("THAT".to_string(), 4);
         table.insert("SCREEN".to_string(), 16384);
         table.insert("KBD".to_string(), 24576);
+        // this is not how to you do static
         table.insert("i".to_string(), 16 );
 
         Self { table, var_index }
